@@ -6,12 +6,15 @@ m2_api = OauthWebAPI('rtxojvqglcd2m4f8n3pg6nhi1dviil00', 'bhzrf9y224nc2rlonf5z6u
 
 cart_id = 20
 
+
 def test_game_finished_coupon_added_to_cart():
     response = requests.post('http://localhost:3000/didi/500/20')
     assert response.status_code == 201
 
+
 def test_cart_id_and_coupon_added_in_db():
     assert db.get_coupon_with_cart_id(cart_id) is not None
+
 
 def test_coupon_code_in_cart():
     assert m2_api.get_coupon_in_cart(20) is not None
@@ -35,16 +38,4 @@ def test_category_game_finished_add_to_cart_low_score_response_20():
 def test_category_game_finished_add_to_cart_coupon_added_to_cart():
     response = requests.post('http://localhost:3000/didi/500/20')
     cart_items = m2_api.getCartItems('20')
-    # opzoeken wat de query hiervoor is
     assert cart_items.currency
-
-
-def test_length_coupon_code_assert_12():
-    # add coupon via m2_api en dan dit testen door /carts/id
-
-
-def test_category_game_finished_add_to_cart_score_200_2procent_discount_in_cart():
-    # skip
-
-
-# test_database_filled_after_score_completed - score, cart_id, coupon

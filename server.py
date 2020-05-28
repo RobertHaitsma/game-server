@@ -22,7 +22,8 @@ class PostScore(Resource):
         shop_info = self.get_code_id_corresponding_to_score(shop)
         if shop_info is not None:
             self.shop_id, res_owner_key, res_owner_secret, client_key, client_secret, coupon_code_id = shop_info
-            self.m2_api = OauthWebAPI(res_owner_key, res_owner_secret, client_key, client_secret)
+            self.m2_api = OauthWebAPI(
+                res_owner_key, res_owner_secret, client_key, client_secret)
             coupon = self.get_coupon_for_cart_id(coupon_code_id)
             return self.check_valid_coupon(coupon)
         else:
@@ -33,7 +34,8 @@ class PostScore(Resource):
         self.score = score
 
     def get_coupon_for_cart_id(self, coupon_code_id):
-        generated_coupon = check_cart_id_for_coupon(self.cart_id, self.shop_id, self.m2_api)
+        generated_coupon = check_cart_id_for_coupon(
+            self.cart_id, self.shop_id, self.m2_api)
         if generated_coupon is not None:
             return generated_coupon
         else:
@@ -49,8 +51,8 @@ class PostScore(Resource):
         elif isinstance(coupon, str):
             if self.add_coupon_to_cart(coupon):
                 return json.dumps({
-                                      "code": "De kortingscode is toegevoegd aan de winkelwagen. "
-                                              "Druk op volgende om verder te gaan."}), status.HTTP_201_CREATED
+                    "code": "De kortingscode is toegevoegd aan de winkelwagen. "
+                    "Druk op volgende om verder te gaan."}), status.HTTP_201_CREATED
             else:
                 return json.dumps({"code": "Gewonnen couponcode is: " + str(coupon)}), status.HTTP_200_OK
         else:
@@ -65,7 +67,8 @@ class PostScore(Resource):
             return False
 
     def insert_coupon_with_cart_id_in_db(self, coupon_code, added=True):
-        db.insert_cart_id_with_coupon(self.cart_id, self.shop_id, coupon_code, added)
+        db.insert_cart_id_with_coupon(
+            self.cart_id, self.shop_id, coupon_code, added)
 
     def insert_score_in_db(self):
         db.insert_score_with_shop(self.score, self.shop_id)
@@ -76,11 +79,12 @@ class GetCouponInCart(Resource):
         shop_info = get_shop_data(shop)
         if shop_info is not None:
             shop_id, res_owner_key, res_owner_secret, client_key, client_secret = shop_info
-            m2_api = OauthWebAPI(res_owner_key, res_owner_secret, client_key, client_secret)
+            m2_api = OauthWebAPI(
+                res_owner_key, res_owner_secret, client_key, client_secret)
             coupon_code = check_cart_id_for_coupon(cart_id, shop_id, m2_api)
             if coupon_code is not None:
                 return json.dumps({"response_text": "Er zit al een coupon in de winkelwagen. Game "
-                                                  "spelen voor korting is niet mogelijk."}), status.HTTP_409_CONFLICT
+                                   "spelen voor korting is niet mogelijk."}), status.HTTP_409_CONFLICT
             else:
                 return json.dumps({"response_text": "empty"}), status.HTTP_200_OK
         else:

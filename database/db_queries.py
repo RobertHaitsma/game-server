@@ -10,7 +10,8 @@ def get_coupon_id_webshop(shop, score):
     if shop_data is None:
         return None
     else:
-        catalog_coupon_id = select_catalog_coupon_id_with_score(cursor, shop_data[0], score)
+        catalog_coupon_id = select_catalog_coupon_id_with_score(
+            cursor, shop_data[0], score)
 
     db_connection.close_connection(conn)
 
@@ -90,4 +91,3 @@ def insert_cart_id_with_coupon(cart_id, shop_id, coupon_code, automatic_added):
 
     cursor.execute(insert_cart_id, insert_values)
     db_connection.close_insert_connection(conn)
-

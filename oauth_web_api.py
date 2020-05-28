@@ -15,7 +15,7 @@ class OauthWebAPI:
                             resource_owner_secret=res_owner_secret)
 
     def send_coupon_request(self, coupon_code_id):
-        coupon_spec = {
+        payload = json.dumps({
             "couponSpec": {
                 "rule_id": coupon_code_id,
                 "format": "",
@@ -27,13 +27,10 @@ class OauthWebAPI:
                 "delimiter": "",
                 "extension_attributes": {}
             }
-        }
+        })
 
         coupon_link = 'coupons/generate'
         request_token_url = self.base_request_url + coupon_link
-
-        # convert into JSON:
-        payload = json.dumps(coupon_spec)
 
         response = requests.post(url=request_token_url, auth=self.oauth, data=payload,
                                  headers={'Content-Type': 'application/json'})
@@ -46,19 +43,22 @@ class OauthWebAPI:
 
     def added_coupon_to_cart(self, cart_id, coupon_code):
         if cart_id.isdigit():
-            request_token_url = self.base_request_url + 'carts/' + cart_id + '/coupons/' + coupon_code
+            request_token_url = self.base_request_url + \
+                'carts/' + cart_id + '/coupons/' + coupon_code
         else:
-            request_token_url = self.base_request_url + 'guest-carts/' + cart_id + '/coupons/' + coupon_code
+            request_token_url = self.base_request_url + \
+                'guest-carts/' + cart_id + '/coupons/' + coupon_code
 
-        response = requests.put(url=request_token_url, auth=self.oauth, headers={'Content-Type': 'application/json'})
+        response = requests.put(url=request_token_url, auth=self.oauth, headers={
+                                'Content-Type': 'application/json'})
 
         return response.status_code == 200
-        # return response.content == b'true'
 
     def get_coupon_in_cart(self, cart_id):
         request_token_url = self.base_request_url + 'carts/' + cart_id + '/coupons'
 
-        response = requests.get(url=request_token_url, auth=self.oauth, headers={'Content-Type': 'application/json'})
+        response = requests.get(url=request_token_url, auth=self.oauth, headers={
+                                'Content-Type': 'application/json'})
         if response.status_code == 200:
             return response.content
         else:
@@ -67,7 +67,8 @@ class OauthWebAPI:
     def get_cart_items(self, cart_id):
         request_token_url = self.base_request_url + 'carts/' + cart_id
 
-        response = requests.get(url=request_token_url, auth=self.oauth, headers={'Content-Type': 'application/json'})
+        response = requests.get(url=request_token_url, auth=self.oauth, headers={
+                                'Content-Type': 'application/json'})
         if response.status_code == 200:
             return response.content
         else:
